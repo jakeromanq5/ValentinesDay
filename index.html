@@ -118,7 +118,8 @@
 
   <div class="overlay" id="overlay">
     <div class="modal">
-      <h2>YAY!!! 💖</h2>
+    <h2>YAY!!! 💖</h2>
+  <p> Was hoping you'd say yes ☺️<br/>Check outside for a surprise!</p>
       <button id="close" style="background:#111;color:#fff;">Close</button>
     </div>
 
@@ -152,25 +153,9 @@
     closeBtn.addEventListener("click", () => overlay.style.display = "none");
     overlay.addEventListener("click", (e) => { if(e.target === overlay) overlay.style.display = "none"; });
 
-    // "No" button dodges the cursor/tap
-    function moveNoButton(){
-      const pad = 18;
-      const maxX = window.innerWidth - no.offsetWidth - pad;
-      const maxY = window.innerHeight - no.offsetHeight - pad;
-
-      const x = Math.max(pad, Math.random() * maxX);
-      const y = Math.max(pad, Math.random() * maxY);
-
-      no.style.position = "fixed";
-      no.style.left = x + "px";
-      no.style.top = y + "px";
-    }
-
-    no.addEventListener("mouseenter", moveNoButton);
     no.addEventListener("click", () => {
-      subtitle.textContent = "Nice try 😅";
-      moveNoButton();
-    });
+    subtitle.textContent = "Oh,that’s okay — maybe next time 😔";
+});
 
     // simple heart "confetti"
     function confettiHearts(){
@@ -192,6 +177,13 @@
         setTimeout(()=>s.remove(), 1600);
       }
     }
+    // Fade out when "No" is clicked
+no.addEventListener("click", () => {
+  subtitle.textContent = "Oh,that’s okay — maybe next time 😔"";
+  card.style.transition = "opacity 1.2s ease";
+  card.style.opacity = "0";
+});
+});
   </script>
 </body>
 </html>
