@@ -26,6 +26,7 @@
       box-shadow: 0 20px 60px rgba(0,0,0,.15);
       text-align:center;
       position:relative;
+      opacity: 1;
     }
     h1{ margin: 0 0 8px; font-size: clamp(28px, 4vw, 42px); }
     p{ margin: 0 0 18px; font-size: 18px; opacity:.9; }
@@ -63,13 +64,9 @@
     #no{
       background: white;
       color: #333;
-      position: relative;
+      position: relative; /* stays still */
     }
-    .note{
-      margin-top: 14px;
-      font-size: 14px;
-      opacity:.75;
-    }
+
     /* little floating hearts */
     .mini-heart{
       position:absolute;
@@ -105,6 +102,7 @@
     .small{ font-size: 14px; opacity:.7; }
   </style>
 </head>
+
 <body>
   <div class="card" id="card">
     <div class="heart">💘</div>
@@ -115,13 +113,15 @@
       <button id="yes">YES! 💕</button>
       <button id="no">no 🙈</button>
     </div>
+  </div>
 
   <div class="overlay" id="overlay">
     <div class="modal">
-    <h2>YAY!!! 💖</h2>
-  <p> Was hoping you'd say yes ☺️<br/>Check outside for a surprise!</p>
+      <h2>YAY!!! 💖</h2>
+      <p>Was hoping you'd say yes ☺️<br/>Check outside for a surprise!</p>
       <button id="close" style="background:#111;color:#fff;">Close</button>
     </div>
+  </div>
 
   <script>
     const yes = document.getElementById("yes");
@@ -151,11 +151,16 @@
     });
 
     closeBtn.addEventListener("click", () => overlay.style.display = "none");
-    overlay.addEventListener("click", (e) => { if(e.target === overlay) overlay.style.display = "none"; });
+    overlay.addEventListener("click", (e) => {
+      if(e.target === overlay) overlay.style.display = "none";
+    });
 
+    // No: update text + fade out the card
     no.addEventListener("click", () => {
-    subtitle.textContent = "Oh,that’s okay — maybe next time 😔";
-});
+      subtitle.textContent = "Oh, that’s okay — maybe next time 😔";
+      card.style.transition = "opacity 1.2s ease";
+      card.style.opacity = "0";
+    });
 
     // simple heart "confetti"
     function confettiHearts(){
@@ -177,13 +182,6 @@
         setTimeout(()=>s.remove(), 1600);
       }
     }
-    // Fade out when "No" is clicked
-no.addEventListener("click", () => {
-  subtitle.textContent = "Oh,that’s okay — maybe next time 😔"";
-  card.style.transition = "opacity 1.2s ease";
-  card.style.opacity = "0";
-});
-});
   </script>
 </body>
 </html>
