@@ -37,9 +37,6 @@
       text-align:center;
       position:relative;
       opacity: 1;
-
-      /* NEW: keep dodging inside the white card */
-      overflow: hidden;
     }
 
     h1{ margin: 0 0 8px; font-size: clamp(28px, 4vw, 42px); }
@@ -59,9 +56,6 @@
       gap: 14px;
       justify-content:center;
       flex-wrap:wrap;
-      position: relative;
-      min-height: 56px;
-      padding: 6px;
     }
 
     button{
@@ -82,17 +76,11 @@
     }
     #yes:hover{ transform: translateY(-1px); }
 
-    /* UPDATED: NO is positioned inside the card */
+    /* NORMAL NO BUTTON */
     #no{
       background: white;
       color: #333;
-
-      position: absolute;     /* IMPORTANT: now relative to .card */
-      left: 50%;
-      top: 72%;
-      transform: translateX(90px);
-
-      transition: left .18s ease, top .18s ease, transform .18s ease;
+      position: relative;
     }
 
     .mini-heart{
@@ -123,9 +111,6 @@
       text-align:center;
       box-shadow: 0 24px 80px rgba(0,0,0,.25);
     }
-    .modal h2{ margin:0 0 10px; font-size: 28px; }
-    .modal p{ margin:0 0 14px; }
-    .small{ font-size: 14px; opacity:.7; }
   </style>
 </head>
 
@@ -135,7 +120,7 @@
     <h1 class="intro">Keymia…</h1>
     <p id="subtitle">Will you be my Valentine?</p>
 
-    <div class="btns" id="btns">
+    <div class="btns">
       <button id="yes">YES! 💕</button>
       <button id="no">no 🙈</button>
     </div>
@@ -144,7 +129,7 @@
   <div class="overlay" id="overlay">
     <div class="modal">
       <h2>YAY!!! 💖</h2>
-      <p> I was hoping you would say yes ☺️<br/> Check outside for a surprise!</p>
+      <p>I was hoping you would say yes ☺️<br/>Check outside for a surprise!</p>
       <button id="close" style="background:#111;color:#fff;">Close</button>
     </div>
   </div>
@@ -157,7 +142,7 @@
     const card = document.getElementById("card");
     const subtitle = document.getElementById("subtitle");
 
-    // Make tiny hearts float up from the card
+    // floating hearts
     function spawnHeart(){
       const h = document.createElement("div");
       h.className = "mini-heart";
@@ -181,45 +166,14 @@
       if(e.target === overlay) overlay.style.display = "none";
     });
 
-    // TEMPORARY DODGE (inside the white card)
-    let dodges = 0;
-    const maxDodges = 3;
-    let initialized = false;
-
-    no.addEventListener("mouseover", () => {
-      if (dodges >= maxDodges) return;
-
-      const box = card.getBoundingClientRect();
-      const pad = 12;
-
-      const maxX = box.width - no.offsetWidth - pad;
-      const maxY = box.height - no.offsetHeight - pad;
-
-      const x = pad + Math.random() * Math.max(0, maxX - pad);
-      const y = pad + Math.random() * Math.max(0, maxY - pad);
-
-      if (!initialized){
-        no.style.transform = "none";
-        initialized = true;
-      }
-
-      no.style.left = `${x}px`;
-      no.style.top  = `${y}px`;
-
-      dodges++;
-
-      if (dodges === maxDodges){
-        no.textContent = "no 🙈";
-      }
-    });
-
+    // NO button click
     no.addEventListener("click", () => {
       subtitle.textContent = "Oh, that’s okay — maybe next time 😔";
       card.style.transition = "opacity 3.5s ease";
       card.style.opacity = "0";
     });
 
-    // simple heart "confetti"
+    // confetti
     function confettiHearts(){
       for(let i=0;i<26;i++){
         const s = document.createElement("div");
