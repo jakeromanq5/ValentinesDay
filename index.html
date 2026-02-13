@@ -186,27 +186,27 @@ no.addEventListener("click", () => {
   subtitle.textContent = "Oh, that’s okay — maybe next time 😔";
   card.style.transition = "opacity 3.5s ease";
   card.style.opacity = "0";
+});
 
-    // simple heart "confetti"
-    function confettiHearts(){
-      for(let i=0;i<26;i++){
-        const s = document.createElement("div");
-        s.textContent = ["💖","💘","💗","💞"][Math.floor(Math.random()*4)];
-        s.style.position = "fixed";
-        s.style.left = Math.random()*100 + "vw";
-        s.style.top = "-20px";
-        s.style.fontSize = (16 + Math.random()*22) + "px";
-        s.style.transition = "transform 1.4s ease, opacity 1.4s ease";
-        document.body.appendChild(s);
 
-        requestAnimationFrame(() => {
-          s.style.transform = `translateY(${110 + Math.random()*90}vh) rotate(${Math.random()*360}deg)`;
-          s.style.opacity = "0";
-        });
+// simple heart "confetti"
+function confettiHearts(){
+  for(let i=0;i<26;i++){
+    const s = document.createElement("div");
+    s.textContent = ["💖","💘","💗","💞"][Math.floor(Math.random()*4)];
+    s.style.position = "fixed";
+    s.style.left = Math.random()*100 + "vw";
+    s.style.top = "-20px";
+    s.style.fontSize = (16 + Math.random()*22) + "px";
+    s.style.transition = "transform 1.4s ease, opacity 1.4s ease";
+    document.body.appendChild(s);
 
-        setTimeout(()=>s.remove(), 1600);
-      }
-    }
-  </script>
-</body>
-</html>
+    requestAnimationFrame(() => {
+      s.style.transform = `translateY(${110 + Math.random()*90}vh) rotate(${Math.random()*360}deg)`;
+      s.style.opacity = "0";
+    });
+
+    setTimeout(()=>s.remove(), 1600);
+  }
+}
+<script> 
