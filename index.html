@@ -162,6 +162,7 @@
     overlay.addEventListener("click", (e) => {
       if(e.target === overlay) overlay.style.display = "none";
     });
+    
 let dodges = 0;
 const maxDodges = 3;
 
@@ -205,10 +206,9 @@ function confettiHearts(){
       s.style.transform = `translateY(${110 + Math.random()*90}vh) rotate(${Math.random()*360}deg)`;
       s.style.opacity = "0";
     });
-
     setTimeout(()=>s.remove(), 1600);
   }
 }
-  </script
+  </script>
   </body>
   </html>
