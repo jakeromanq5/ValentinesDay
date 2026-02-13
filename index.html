@@ -37,6 +37,9 @@
       text-align:center;
       position:relative;
       opacity: 1;
+
+      /* NEW: keep dodging inside the white card */
+      overflow: hidden;
     }
 
     h1{ margin: 0 0 8px; font-size: clamp(28px, 4vw, 42px); }
@@ -56,8 +59,6 @@
       gap: 14px;
       justify-content:center;
       flex-wrap:wrap;
-
-      /* IMPORTANT for dodge: gives a "play area" */
       position: relative;
       min-height: 56px;
       padding: 6px;
@@ -81,19 +82,19 @@
     }
     #yes:hover{ transform: translateY(-1px); }
 
-    /* DODGE SETUP */
+    /* UPDATED: NO is positioned inside the card */
     #no{
       background: white;
       color: #333;
 
-      position: absolute;         /* lets it move within .btns */
+      position: absolute;     /* IMPORTANT: now relative to .card */
       left: 50%;
-      top: 6px;
-      transform: translateX(calc(-50% + 90px)); /* starts to the right of YES */
+      top: 72%;
+      transform: translateX(90px);
+
       transition: left .18s ease, top .18s ease, transform .18s ease;
     }
 
-    /* little floating hearts */
     .mini-heart{
       position:absolute;
       font-size: 18px;
@@ -106,7 +107,6 @@
       100%{ transform: translateY(-120px); opacity:0; }
     }
 
-    /* success overlay */
     .overlay{
       position:fixed;
       inset:0;
@@ -152,7 +152,6 @@
   <script>
     const yes = document.getElementById("yes");
     const no = document.getElementById("no");
-    const btns = document.getElementById("btns");
     const overlay = document.getElementById("overlay");
     const closeBtn = document.getElementById("close");
     const card = document.getElementById("card");
@@ -182,18 +181,16 @@
       if(e.target === overlay) overlay.style.display = "none";
     });
 
-    // TEMPORARY DODGE (stays inside the .btns area)
+    // TEMPORARY DODGE (inside the white card)
     let dodges = 0;
     const maxDodges = 3;
-
-    // remove the initial transform after first dodge so positioning is consistent
     let initialized = false;
 
     no.addEventListener("mouseover", () => {
       if (dodges >= maxDodges) return;
 
-      const box = btns.getBoundingClientRect();
-      const pad = 6;
+      const box = card.getBoundingClientRect();
+      const pad = 12;
 
       const maxX = box.width - no.offsetWidth - pad;
       const maxY = box.height - no.offsetHeight - pad;
