@@ -2,18 +2,20 @@
 <html lang="en">
 <head>
   <meta property="og:title" content="💌 A Question For You…" />
-<meta property="og:description" content="Open this ❤️" />
-<meta property="og:image" content="https://yourdomain.com/preview.jpg" />
-<meta property="og:url" content="https://yourdomain.com" />
-<meta property="og:type" content="website" />
+  <meta property="og:description" content="Open this ❤️" />
+  <meta property="og:image" content="https://yourdomain.com/preview.jpg" />
+  <meta property="og:url" content="https://yourdomain.com" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image">
 
-<meta name="twitter:card" content="summary_large_image">
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>💌 </title>
+
   <style>
     :root { --bg1:#ffdde1; --bg2:#ee9ca7; --card:#ffffffcc; --text:#1f1f1f; }
     * { box-sizing: border-box; }
+
     body{
       margin:0;
       min-height:100vh;
@@ -21,10 +23,10 @@
       place-items:center;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       background:radial-gradient(circle at 10% 20%, var(--bg1), var(--bg2));
-       color: var(--text);
-  
+      color: var(--text);
       overflow:hidden;
     }
+
     .card{
       width:min(560px, 92vw);
       background: var(--card);
@@ -36,8 +38,10 @@
       position:relative;
       opacity: 1;
     }
+
     h1{ margin: 0 0 8px; font-size: clamp(28px, 4vw, 42px); }
     p{ margin: 0 0 18px; font-size: 18px; opacity:.9; }
+
     .heart{
       font-size: 54px;
       animation: float 2.2s ease-in-out infinite;
@@ -52,7 +56,13 @@
       gap: 14px;
       justify-content:center;
       flex-wrap:wrap;
+
+      /* IMPORTANT for dodge: gives a "play area" */
+      position: relative;
+      min-height: 56px;
+      padding: 6px;
     }
+
     button{
       border:0;
       padding: 12px 18px;
@@ -64,15 +74,23 @@
       user-select:none;
     }
     button:active{ transform: translateY(1px) scale(.99); }
+
     #yes{
       background: #ff3b7b;
       color: white;
     }
     #yes:hover{ transform: translateY(-1px); }
+
+    /* DODGE SETUP */
     #no{
       background: white;
       color: #333;
-      position: relative; /* stays still */
+
+      position: absolute;         /* lets it move within .btns */
+      left: 50%;
+      top: 6px;
+      transform: translateX(calc(-50% + 90px)); /* starts to the right of YES */
+      transition: left .18s ease, top .18s ease, transform .18s ease;
     }
 
     /* little floating hearts */
@@ -115,9 +133,9 @@
   <div class="card" id="card">
     <div class="heart">💘</div>
     <h1 class="intro">Keymia…</h1>
-    <p id= "subtitle">Will you be my Valentine?</p>
+    <p id="subtitle">Will you be my Valentine?</p>
 
-    <div class="btns">
+    <div class="btns" id="btns">
       <button id="yes">YES! 💕</button>
       <button id="no">no 🙈</button>
     </div>
@@ -134,6 +152,7 @@
   <script>
     const yes = document.getElementById("yes");
     const no = document.getElementById("no");
+    const btns = document.getElementById("btns");
     const overlay = document.getElementById("overlay");
     const closeBtn = document.getElementById("close");
     const card = document.getElementById("card");
@@ -162,33 +181,67 @@
     overlay.addEventListener("click", (e) => {
       if(e.target === overlay) overlay.style.display = "none";
     });
-    
-no.addEventListener("click", () => {
-  subtitle.textContent = "Oh, that’s okay — maybe next time 😔";
-  card.style.transition = "opacity 3.5s ease";
-  card.style.opacity = "0";
-});
 
+    // TEMPORARY DODGE (stays inside the .btns area)
+    let dodges = 0;
+    const maxDodges = 3;
 
-// simple heart "confetti"
-function confettiHearts(){
-  for(let i=0;i<26;i++){
-    const s = document.createElement("div");
-    s.textContent = ["💖","💘","💗","💞"][Math.floor(Math.random()*4)];
-    s.style.position = "fixed";
-    s.style.left = Math.random()*100 + "vw";
-    s.style.top = "-20px";
-    s.style.fontSize = (16 + Math.random()*22) + "px";
-    s.style.transition = "transform 1.4s ease, opacity 1.4s ease";
-    document.body.appendChild(s);
+    // remove the initial transform after first dodge so positioning is consistent
+    let initialized = false;
 
-    requestAnimationFrame(() => {
-      s.style.transform = `translateY(${110 + Math.random()*90}vh) rotate(${Math.random()*360}deg)`;
-      s.style.opacity = "0";
+    no.addEventListener("mouseover", () => {
+      if (dodges >= maxDodges) return;
+
+      const box = btns.getBoundingClientRect();
+      const pad = 6;
+
+      const maxX = box.width - no.offsetWidth - pad;
+      const maxY = box.height - no.offsetHeight - pad;
+
+      const x = pad + Math.random() * Math.max(0, maxX - pad);
+      const y = pad + Math.random() * Math.max(0, maxY - pad);
+
+      if (!initialized){
+        no.style.transform = "none";
+        initialized = true;
+      }
+
+      no.style.left = `${x}px`;
+      no.style.top  = `${y}px`;
+
+      dodges++;
+
+      if (dodges === maxDodges){
+        no.textContent = "no 🙈";
+      }
     });
-    setTimeout(()=>s.remove(), 1600);
-  }
-}
+
+    no.addEventListener("click", () => {
+      subtitle.textContent = "Oh, that’s okay — maybe next time 😔";
+      card.style.transition = "opacity 3.5s ease";
+      card.style.opacity = "0";
+    });
+
+    // simple heart "confetti"
+    function confettiHearts(){
+      for(let i=0;i<26;i++){
+        const s = document.createElement("div");
+        s.textContent = ["💖","💘","💗","💞"][Math.floor(Math.random()*4)];
+        s.style.position = "fixed";
+        s.style.left = Math.random()*100 + "vw";
+        s.style.top = "-20px";
+        s.style.fontSize = (16 + Math.random()*22) + "px";
+        s.style.transition = "transform 1.4s ease, opacity 1.4s ease";
+        document.body.appendChild(s);
+
+        requestAnimationFrame(() => {
+          s.style.transform = `translateY(${110 + Math.random()*90}vh) rotate(${Math.random()*360}deg)`;
+          s.style.opacity = "0";
+        });
+
+        setTimeout(()=>s.remove(), 1600);
+      }
+    }
   </script>
-  </body>
-  </html>
+</body>
+</html>
